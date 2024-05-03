@@ -1,4 +1,4 @@
-# Threads, Asyncronous Programming, Parallel Programming
+# Processes, Threads and Asyncronous Programming in .NET and Linux
 
 # Core concepts
 
