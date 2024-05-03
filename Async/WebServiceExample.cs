@@ -4,16 +4,27 @@ public static class AsyncAwait
 {
     public static async Task RunExample()
     {
-        Console.WriteLine($"Thread principal: {Thread.CurrentThread.ManagedThreadId}");
+        Console.WriteLine(
+            $"{DateTime.Now.GetTodayFormattedTime()} - Thread that running RunExample method before await keyword: {Thread.CurrentThread.ManagedThreadId}");
 
-        await DownloadConteudoAsync();
+        var downloadTask = DownloadContentAsync();
 
-        Console.WriteLine($"Fim do método Main na thread: {Thread.CurrentThread.ManagedThreadId}");
+        Console.WriteLine(
+            $"{DateTime.Now.GetTodayFormattedTime()} - " + 
+            "Execution flow continues in thread: {Thread.CurrentThread.ManagedThreadId}" + 
+            "because await keyword was reached");
+
+        // return execution flow to the caller
+        await downloadTask;
+
+        Console.WriteLine(
+            $"{DateTime.Now.GetTodayFormattedTime()} - Thread that running RunExample method after await keyword: {Thread.CurrentThread.ManagedThreadId}");
     }
 
-    private static async Task DownloadConteudoAsync()
+    private static async Task DownloadContentAsync()
     {
-        Console.WriteLine($"Início do método assíncrono na thread: {Thread.CurrentThread.ManagedThreadId}");
+        Console.WriteLine(
+            $"{DateTime.Now.GetTodayFormattedTime()} - Thread that running DownloadConteudoAsync method before await keyword: {Thread.CurrentThread.ManagedThreadId}");
 
         var urls = new List<string>
         {
@@ -22,28 +33,38 @@ public static class AsyncAwait
             "https://www.example.net"
         };
 
-        var downloadTasks = urls.Select(s =>
+        var downloadTasks = urls.Select(async s =>
         {
-            Console.WriteLine($"Iniciando download de {s} na thread: {Thread.CurrentThread.ManagedThreadId}");
-            return DownloadAsync(s);
+            Console.WriteLine(
+                $"{DateTime.Now.GetTodayFormattedTime()} - Starting download of {s} in thread: {Thread.CurrentThread.ManagedThreadId}");
+           
+            var content = await DownloadAsync(s);
+
+            Console.WriteLine(
+                $"{DateTime.Now.GetTodayFormattedTime()} - Download completed of {s} in thread: {Thread.CurrentThread.ManagedThreadId}");
+
+            return content;
         }).ToList();
-    
-        var resultados = await Task.WhenAll(downloadTasks);
-    
-        Console.WriteLine($"Fim do método assíncrono na thread: {Thread.CurrentThread.ManagedThreadId}");
-    
-        foreach (var resultado in resultados) Console.WriteLine(resultado);
+
+        var results = await Task.WhenAll(downloadTasks);
+
+        Console.WriteLine(
+            $"{DateTime.Now.GetTodayFormattedTime()} - Thread that running DownloadConteudoAsync method after await keyword: {Thread.CurrentThread.ManagedThreadId}");
+
+        foreach (var result in results) Console.WriteLine(result);
     }
 
     private static async Task<string> DownloadAsync(string url)
     {
-        Console.WriteLine($"Iniciando download de {url} na thread: {Thread.CurrentThread.ManagedThreadId}");
+        Console.WriteLine(
+            $"{DateTime.Now.GetTodayFormattedTime()} - Starting download of {url} in thread: {Thread.CurrentThread.ManagedThreadId}");
 
         using var client = new HttpClient();
-        var conteudo = await client.GetStringAsync(url);
+        var content = await client.GetStringAsync(url);
 
-        Console.WriteLine($"Download concluído de {url} na thread: {Thread.CurrentThread.ManagedThreadId}");
+        Console.WriteLine(
+            $"{DateTime.Now.GetTodayFormattedTime()} - Download completed of {url} in thread: {Thread.CurrentThread.ManagedThreadId}");
 
-        return conteudo;
+        return content;
     }
 }
