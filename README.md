@@ -49,7 +49,7 @@ A thread is the smallest unit of execution that can be scheduled by an operating
 ## Asyncronous Programming :hourglass_flowing_sand:
 Asyncronous programming style is a way to write code that can perform long-running operations without blocking the main thread. This is useful when you want your application to remain responsive to user input while it performs work in the background.
 
-## Parallel Programming :computer: :computer: :computer:
+## Parallel Programming :computer: :computer: :computer: (same computer)
 In computer science, parallel programming is a type of computation in which many calculations or processes are carried out simultaneously. Large problems can often be divided into smaller ones, which can then be solved at the same time. There are several different forms of parallel computing: bit-level, instruction-level, data, and task parallelism.
 
 ## Concurrent Programming
